@@ -1,4 +1,6 @@
-const str = 'hello webpack'
-console.log(str);
+import Vue from 'vue'
+import App from './App.vue'
 
-document.getElementById('#app').innerText(`<h1>Hello World</h1>`)
+new Vue({
+  render: h => h(App)
+}).$mount('#app')
