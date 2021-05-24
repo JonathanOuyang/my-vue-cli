@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>{{title}}</h1>
+    <h1>{{env.TITLE}}</h1>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
   name: 'App',
   data() {
     return {
-      title: 'hello world'
+      env: process.env
     }
   }
 }
@@ -18,5 +18,6 @@ export default {
 <style lang="scss" scoped>
 #app {
   background: blue;
+  transform: translateX(10px);
 }
 </style>

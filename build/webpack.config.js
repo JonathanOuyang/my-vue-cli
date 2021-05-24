@@ -1,38 +1,38 @@
-// build.webpack.config.js
-const path = require('path');
+// build/webpack.config.js
+const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const webpack = require("webpack");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 module.exports = {
-  // 打包模式
-  mode: 'development',
   entry: {
     // 配置入口文件
-    main: [
-      path.resolve(__dirname, '../src/main.js')
-    ]
+    main: [path.resolve(__dirname, "../src/main.js")]
   },
   output: {
     // 配置输出
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'js/[name].[chunkhash:8].js',
-    chunkFilename: 'js/[name].[chunkhash:8].js',
-    publicPath: '/'
+    path: path.resolve(__dirname, "../dist"),
+    filename: "js/[name].[chunkhash:8].js",
+    chunkFilename: "js/[name].[chunkhash:8].js",
+    publicPath: "/"
   },
+
+  // 开发服务
   devServer: {
     hot: true,
     port: 3001,
-    contentBase: "./dist",
-    // index: "../index.html"
+    contentBase: "./dist"
   },
   optimization: {
-    moduleIds: 'named'
+    moduleIds: "named"
   },
   resolve: {
+    // 自动解析确定的扩展名
+    extensions: [".js", ".vue"],
+
+    // v5
     alias: {
-      vue$: 'vue/dist/vue.runtime.esm.js'
-    },
+      process: "process/browser"
+    }
   },
   module: {
     // es6+转es5
@@ -42,29 +42,7 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader'
-          }
-        ]
-      },
-      {
-        test: /\.s[ac]ss$/,
-        use: [
-          // 解析scss和css
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              implementation: require('dart-sass')
-            }
-          },
-          // 添加css前缀
-          {
-            loader: 'postcss-loader'
+            loader: "babel-loader"
           }
         ]
       },
@@ -74,13 +52,13 @@ module.exports = {
         test: /\.(jpe?g|png|gif)$/i,
         use: [
           {
-            loader: 'url=loader',
+            loader: "url=loader",
             options: {
               limit: 4096,
               fallback: {
-                loader: 'file-loader',
+                loader: "file-loader",
                 options: {
-                  name: 'img/[name].[hash:8].[ext]'
+                  name: "img/[name].[hash:8].[ext]"
                 }
               }
             }
@@ -93,13 +71,13 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
         use: [
           {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
               limit: 4096,
               fallback: {
-                loader: 'file-loader',
+                loader: "file-loader",
                 options: {
-                  name: 'fonts/[name].[hash:8].[ext]'
+                  name: "fonts/[name].[hash:8].[ext]"
                 }
               }
             }
@@ -107,21 +85,20 @@ module.exports = {
         ]
       },
 
-
       // 解析vue文件
       {
         test: /\.vue$/,
         use: [
           // 缓存编译结果
           {
-            loader: 'cache-loader'
+            loader: "cache-loader"
           },
           // 使用worker池运行loader
           {
-            loader: 'thread-loader'
+            loader: "thread-loader"
           },
           {
-            loader: 'vue-loader',
+            loader: "vue-loader",
             options: {
               compilerOptions: {
                 preserveWhitespace: false
@@ -134,16 +111,21 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
+
     // 创建html页面，自动引入打包生成的js文件
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../public/index.html")
     }),
 
-    // 清空打包目录
-    // new CleanWebpackPlugin(),
-
+    // v4
+    // new webpack.NamedModulesPlugin(),
 
     // 热更新
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+
+    // v5
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    })
   ]
-}
+};
